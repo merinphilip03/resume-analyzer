@@ -1,5 +1,12 @@
+import ProjectIdeas from "./ProjectIdeas"
+import ATSBreakdown from "./ATSBreakdown"
+import TailoredResume from "./TailoredResume"
+
 export default function ResultsView({ result, onReset }) {
-    const { match_score, summary, strengths, missing_keywords, improvement_tip } = result
+    const {
+        match_score, summary, strengths, missing_keywords,
+        improvement_tip, project_ideas, tailored_resume, ats_criteria
+    } = result
 
     const scoreLevel = match_score >= 70 ? "high" : match_score >= 40 ? "medium" : "low"
     const scoreLabel = match_score >= 70 ? "Strong match" : match_score >= 40 ? "Partial match" : "Weak match"
@@ -16,12 +23,11 @@ export default function ResultsView({ result, onReset }) {
                 <div className="score-hero">
                     <div className="score-ring-wrap">
                         <svg width="140" height="140" viewBox="0 0 140 140" aria-hidden="true">
-                            <circle cx="70" cy="70" r="54" fill="none" stroke="var(--border)" strokeWidth="10" />
+                            <circle cx="70" cy="70" r="54" fill="none"
+                                stroke="var(--border)" strokeWidth="10" />
                             <circle
-                                cx="70" cy="70" r="54"
-                                fill="none"
-                                stroke={scoreColor}
-                                strokeWidth="10"
+                                cx="70" cy="70" r="54" fill="none"
+                                stroke={scoreColor} strokeWidth="10"
                                 strokeLinecap="round"
                                 strokeDasharray={circumference}
                                 strokeDashoffset={offset}
@@ -30,7 +36,9 @@ export default function ResultsView({ result, onReset }) {
                             />
                         </svg>
                         <div className="score-center">
-                            <span className="score-number" style={{ color: scoreColor }}>{match_score}</span>
+                            <span className="score-number" style={{ color: scoreColor }}>
+                                {match_score}
+                            </span>
                             <span className="score-denom">/100</span>
                         </div>
                     </div>
@@ -40,12 +48,12 @@ export default function ResultsView({ result, onReset }) {
                     </div>
                 </div>
 
+                {/* Keywords Grid */}
                 <div className="results-grid">
-
-                    {/* Strengths */}
                     <div className="result-card">
                         <div className="card-header">
-                            <i className="ti ti-circle-check" style={{ color: "#22c55e" }} aria-hidden="true"></i>
+                            <i className="ti ti-circle-check"
+                                style={{ color: "#22c55e" }} aria-hidden="true"></i>
                             <h2>What matches</h2>
                         </div>
                         {strengths.length > 0 ? (
@@ -59,10 +67,10 @@ export default function ResultsView({ result, onReset }) {
                         )}
                     </div>
 
-                    {/* Missing */}
                     <div className="result-card">
                         <div className="card-header">
-                            <i className="ti ti-circle-x" style={{ color: "#ef4444" }} aria-hidden="true"></i>
+                            <i className="ti ti-circle-x"
+                                style={{ color: "#ef4444" }} aria-hidden="true"></i>
                             <h2>What's missing</h2>
                         </div>
                         {missing_keywords.length > 0 ? (
@@ -80,11 +88,21 @@ export default function ResultsView({ result, onReset }) {
                 {/* Improvement Tip */}
                 <div className="tip-card">
                     <div className="card-header">
-                        <i className="ti ti-bulb" style={{ color: "#f59e0b" }} aria-hidden="true"></i>
+                        <i className="ti ti-bulb"
+                            style={{ color: "#f59e0b" }} aria-hidden="true"></i>
                         <h2>Improvement tip</h2>
                     </div>
                     <p className="tip-text">{improvement_tip}</p>
                 </div>
+
+                {/* ATS Breakdown */}
+                <ATSBreakdown criteria={ats_criteria} />
+
+                {/* Project Ideas */}
+                <ProjectIdeas ideas={project_ideas} />
+
+                {/* Tailored Resume */}
+                <TailoredResume content={tailored_resume} />
 
                 {/* Actions */}
                 <div className="actions">
