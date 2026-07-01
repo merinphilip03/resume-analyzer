@@ -10,6 +10,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import config
 from app.routers.analyze import router as analyze_router
 
+import os
+
+
 # Configure logging for the whole app
 logging.basicConfig(
     level=logging.INFO,
@@ -34,12 +37,18 @@ def create_app() -> FastAPI:
     )
 
     # CORS middleware — allows React frontend to call this API
+    # Read allowed origins from environment variable
+    ALLOWED_ORIGINS = os.getenv(
+        "ALLOWED_ORIGINS",
+        "http://localhost:5173"       # default for local development
+    ).split(",")
+
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["*"],      # Tighten this in production
+        allow_origins=ALLOWED_ORIGINS,
         allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
+        allow_methods=["GET", "POST"],   # only what your app actually uses
+        allow_headers=["Content-Type"],  # only what your app actually sends
     )
 
     # Register routers
