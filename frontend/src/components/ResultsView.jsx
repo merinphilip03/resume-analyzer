@@ -1,8 +1,17 @@
+import { useState } from "react"
 import ProjectIdeas from "./ProjectIdeas"
 import ATSBreakdown from "./ATSBreakdown"
 import TailoredResume from "./TailoredResume"
 
+const TABS = [
+    { key: "ats", label: "ATS Breakdown", icon: "ti-checklist" },
+    { key: "projects", label: "Project Ideas", icon: "ti-rocket" },
+    { key: "resume", label: "Tailored Resume", icon: "ti-file-text" },
+]
+
 export default function ResultsView({ result, onReset }) {
+    const [activeTab, setActiveTab] = useState(null)
+
     const {
         match_score, summary, strengths, missing_keywords,
         improvement_tip, project_ideas, tailored_resume, ats_criteria
@@ -14,6 +23,11 @@ export default function ResultsView({ result, onReset }) {
 
     const circumference = 2 * Math.PI * 54
     const offset = circumference - (match_score / 100) * circumference
+
+    const handleTab = (key) => {
+        // clicking the same tab again closes it
+        setActiveTab(prev => prev === key ? null : key)
+    }
 
     return (
         <div className="results-page">
@@ -95,14 +109,35 @@ export default function ResultsView({ result, onReset }) {
                     <p className="tip-text">{improvement_tip}</p>
                 </div>
 
-                {/* ATS Breakdown */}
-                <ATSBreakdown criteria={ats_criteria} />
+                {/* Explore Buttons */}
+                <div className="explore-section">
+                    <p className="explore-label">Explore more</p>
+                    <div className="explore-buttons">
+                        {TABS.map(tab => (
+                            <button
+                                key={tab.key}
+                                className={`explore-btn ${activeTab === tab.key ? "active" : ""}`}
+                                onClick={() => handleTab(tab.key)}
+                            >
+                                <i className={`ti ${tab.icon}`} aria-hidden="true"></i>
+                                <span>{tab.label}</span>
+                                <i className={`ti ${activeTab === tab.key ? "ti-chevron-up" : "ti-chevron-down"} chevron`}
+                                    aria-hidden="true"></i>
+                            </button>
+                        ))}
+                    </div>
+                </div>
 
-                {/* Project Ideas */}
-                <ProjectIdeas ideas={project_ideas} />
-
-                {/* Tailored Resume */}
-                <TailoredResume content={tailored_resume} />
+                {/* Tab Content — shown below buttons */}
+                {activeTab === "ats" && (
+                    <ATSBreakdown criteria={ats_criteria} />
+                )}
+                {activeTab === "projects" && (
+                    <ProjectIdeas ideas={project_ideas} />
+                )}
+                {activeTab === "resume" && (
+                    <TailoredResume content={tailored_resume} />
+                )}
 
                 {/* Actions */}
                 <div className="actions">
